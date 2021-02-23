@@ -29,8 +29,8 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
       const text = rules.reduce((result, rule) => result ? result : rule(message), false as RuleResult);
       if (text) {
         console.log(`${username} says "${text}"`);
-
-        members[id] ||= randomVocal(voices, minPitch, pitchRange);
+        members[id] = (text === '###') ? randomVocal(voices, minPitch, pitchRange)
+                                       : members[id] || randomVocal(voices, minPitch, pitchRange);
 
         try {
           const { file, dispose } = await members[id](text);
