@@ -28,6 +28,7 @@ const minPitch = 220;
 const pitchRange = 60;
 
 const bot = create(token, voices, minPitch, pitchRange, [
+  ({content}) => content === '###' && content,
   ({content, author: {username}}) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
   ({content, author: {username}}) => [simpleRules[content] || content, myPhrase(username)].join('')
 ]);
