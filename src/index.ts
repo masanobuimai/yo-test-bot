@@ -8,6 +8,9 @@ const simpleRules: { [key: string]: string } = SimpleRules;
 import FavoritePhrases from '../favorite-phrases.json';
 const favoritePhrase: { [username: string]: string[] } = FavoritePhrases;
 
+import BukiList from '../buki-list.json';
+const bukiLists:string[] = BukiList;
+
 const randomChoice = (array: string[]) => array[Math.floor(Math.random() * array.length)];
 const myPhrase = (name:string) => {
   if (favoritePhrase[name] === undefined) {
@@ -30,7 +33,8 @@ const pitchRange = 60;
 const bot = create(token, voices, minPitch, pitchRange, [
   ({content}) => content === '###' && content,
   ({content, author: {username}}) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
-  ({content, author: {username}}) => [simpleRules[content] || content, myPhrase(username)].filter(s => s).join('')
+  ({content}) => content === '/buki' && 'オレは' + randomChoice(bukiLists) + 'でいく',
+  ({content, author: {username}}) => [simpleRules[content] || content, myPhrase(username)].join('')
 ]);
 
 (async () => {
