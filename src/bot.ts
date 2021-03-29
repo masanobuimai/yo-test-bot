@@ -1,5 +1,6 @@
 import { Client, Message } from 'discord.js';
 import { Say, create as createSay } from './say';
+import { getVoice } from './gtts';
 
 type RuleResult = string | false;
 
@@ -12,6 +13,7 @@ const randomVocal = (voices: string[], minPitch: number, pitchRange: number): Sa
 
 export const create = (token: string, voices: string[], minPitch: number, pitchRange: number, rules: Rule[]) => {
   const members: { [id: string]: Say } = {};
+  const halfAns = new RegExp(/^[\x20-\x7e]*$/);
 
   const client = new Client().on('message', async message => {
     console.debug(message);
@@ -29,13 +31,16 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
       const text = rules.reduce((result, rule) => result ? result : rule(message), false as RuleResult);
       if (text) {
         console.log(`${username} says "${text}"`);
-
         members[id] ||= randomVocal(voices, minPitch, pitchRange);
 
         try {
-          const { file, dispose } = await members[id](text);
-          const dispatcher = connection.play(file);
-          dispatcher.on('finish', dispose);
+          if (halfAns.test(text)) {
+            const dispatcher = connection.play(getVoice(text));
+          } else {
+            const {file, dispose} = await members[id](text);
+            const dispatcher = connection.play(file);
+            dispatcher.on('finish', dispose);
+          }
         } catch (error) {
           console.error(error);
         }

@@ -30,9 +30,11 @@ const voices = fs.readdirSync(voiceDir).map(f => path.join(voiceDir, f));
 const minPitch = 220;
 const pitchRange = 60;
 
+const halfAns = new RegExp(/^(?!\/)[\x20-\x7e]*$/);
 const bot = create(token, voices, minPitch, pitchRange, [
   ({content, author: {username}}) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
   ({content}) => content === '/buki' && `オレは ${randomChoice(bukiList)}でいく`,
+  ({content}) => halfAns.test(content) && content,
   ({content, author: {username}}) => [simpleRules[content] || content, myPhrase(username)].join('')
 ]);
 
