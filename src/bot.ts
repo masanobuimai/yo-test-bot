@@ -35,7 +35,9 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
 
         try {
           if (halfAns.test(text)) {
-            const dispatcher = connection.play(getVoice(text));
+            const dispatcher = connection.play(getVoice('en', text));
+          } else if (text.startsWith('zh')) {
+            const dispatcher = connection.play(getVoice('zh', text.substring(2)));
           } else {
             const {file, dispose} = await members[id](text);
             const dispatcher = connection.play(file);
