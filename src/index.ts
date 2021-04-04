@@ -32,11 +32,15 @@ const pitchRange = 60;
 
 const halfAns = new RegExp(/^(?!\/)[\x20-\x7e]*$/);
 const kanji = new RegExp(/^[一-龠 ]*$/u);
+const trans = new RegExp(/^\/[a-z][a-z]-[a-z][a-z] .*$/);
+const transAuto = new RegExp(/^\/-[a-z][a-z] .*$/);
 const bot = create(token, voices, minPitch, pitchRange, [
   ({content, author: {username}}) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
   ({content}) => content === '/buki' && `オレは ${randomChoice(bukiList)}でいく`,
-  ({content}) => halfAns.test(content) && content,
-  ({content}) => kanji.test(content) && `zh${content}`,
+  ({content}) => halfAns.test(content) && `:en${content}`,
+  ({content}) => kanji.test(content) && `:zh${content}`,
+  ({content}) => trans.test(content) && `;${content.substring(1)}`,
+  ({content}) => transAuto.test(content) && `;ja${content.substring(1)}`,
   ({content, author: {username}}) => [simpleRules[content] || content, myPhrase(username)].join('')
 ]);
 

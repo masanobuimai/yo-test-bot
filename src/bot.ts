@@ -1,6 +1,6 @@
 import { Client, Message } from 'discord.js';
 import { Say, create as createSay } from './say';
-import { getVoice } from './gtts';
+import {getTransVoice, getVoice} from './gtts';
 
 type RuleResult = string | false;
 
@@ -13,7 +13,6 @@ const randomVocal = (voices: string[], minPitch: number, pitchRange: number): Sa
 
 export const create = (token: string, voices: string[], minPitch: number, pitchRange: number, rules: Rule[]) => {
   const members: { [id: string]: Say } = {};
-  const halfAns = new RegExp(/^[\x20-\x7e]*$/);
 
   const client = new Client().on('message', async message => {
     console.debug(message);
@@ -34,16 +33,21 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
         members[id] ||= randomVocal(voices, minPitch, pitchRange);
 
         try {
-          if (halfAns.test(text)) {
-            const dispatcher = connection.play(getVoice('en', text));
-          } else if (text.startsWith('zh')) {
-            const dispatcher = connection.play(getVoice('zh', text.substring(2)));
+          if (text.startsWith(':')) {
+            let lang = text.substring(1, 3);
+            connection.play(getVoice(lang, text.substring(3)));
+          } else if (text.startsWith(';')) {
+            let from = text.substring(1, 3) === 'zh' ? 'zh-CN' : text.substring(1, 3);
+            let to = text.substring(4, 6) === 'zh' ? 'zh-CN' : text.substring(4, 6);
+            console.log(`${from} -> ${to} say "${text.substring(7)}`)
+            connection.play(getTransVoice(from, to, text.substring(7)));
           } else {
             const {file, dispose} = await members[id](text);
             const dispatcher = connection.play(file);
             dispatcher.on('finish', dispose);
           }
         } catch (error) {
+          console.log('-----');
           console.error(error);
         }
       }
