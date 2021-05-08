@@ -60,8 +60,8 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
       client.voice?.connections?.forEach((c) => c.disconnect());
       client.destroy();
     },
-    play(sound: any) {
-      client.voice?.connections.forEach((vc) => vc.play(sound));
+    play(sound: any, volume: number = 1.0) {
+      client.voice?.connections.forEach((vc) => vc.play(sound, { volume: volume } ));
     }
   };
 }

@@ -47,11 +47,16 @@ const bot = create(token, voices, minPitch, pitchRange, [
 ]);
 
 fs.watch(watchDir, { persistent: true }, (event, filename) => {
-  console.log("watcing:" + event + ":" + filename);
-  if ((path.extname(filename) !== ".mp3" && path.extname(filename) !== ".wav") || event !== "rename") return;
-  const sound = path.join(watchDir, filename);
-  console.log('play:' + sound);
-  bot.play(sound);
+  if (event !== "rename") {
+    const sound = path.join(watchDir, filename);
+    if (path.extname(filename) == ".mp3") {
+      console.log('play (volume 0.4):' + sound);
+      bot.play(sound, 0.4);
+    } if (path.extname(filename) == ".wav") {
+      console.log('play:' + sound);
+      bot.play(sound);
+    }
+  }
 });
 
 ["SIGINT", "SIGTERM"].forEach((signal) => {
