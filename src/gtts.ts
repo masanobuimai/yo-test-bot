@@ -26,6 +26,7 @@ export const getTransVoice = (from: string, to: string, text: string) => {
     .then((res: any) => {
       console.log(res.text);
       transText = res.text;
+      console.log(`(${from})"${text} -> (${to})"${transText}`)
       getVoice(to, transText, stream);
    }).catch((err: Error) => {
     console.error(err);
