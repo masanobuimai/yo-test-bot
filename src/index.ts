@@ -44,6 +44,15 @@ const bot = create(token, voices, minPitch, pitchRange, [
   ({content, author: {username}}) => [simpleRules[content] || content, myPhrase(username)].join('')
 ]);
 
+/*
+["SIGINT", "SIGTERM"].forEach((signal) => {
+  process.on(signal, () => {
+    bot.exit();
+    process.exit(0);
+  });
+});
+*/
+
 (async () => {
   try {
     await bot.run();
