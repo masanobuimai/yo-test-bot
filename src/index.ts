@@ -25,7 +25,9 @@ if (!token) {
   process.exit(1);
 }
 
+const watchDir = path.join(__dirname, '..', 'autoplay');
 const voiceDir = path.join(__dirname, '..', 'voices');
+
 const voices = fs.readdirSync(voiceDir).map(f => path.join(voiceDir, f));
 const minPitch = 220;
 const pitchRange = 60;
@@ -43,6 +45,14 @@ const bot = create(token, voices, minPitch, pitchRange, [
   ({content}) => transAuto.test(content) && `;ja${content.substring(1)}`,
   ({content, author: {username}}) => [simpleRules[content] || content, myPhrase(username)].join('')
 ]);
+
+fs.watch(watchDir, { persistent: true }, (event, filename) => {
+  console.log("watcing:" + event + ":" + filename);
+  if ((path.extname(filename) !== ".mp3" && path.extname(filename) !== ".wav") || event !== "rename") return;
+  const sound = path.join(watchDir, filename);
+  console.log('play:' + sound);
+  bot.play(sound);
+});
 
 /*
 ["SIGINT", "SIGTERM"].forEach((signal) => {

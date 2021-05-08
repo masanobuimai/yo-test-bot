@@ -56,9 +56,12 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
 
   return {
     run: async () => await client.login(token),
-    exit: () => {
+    exit() {
       client.voice?.connections?.forEach((c) => c.disconnect());
       client.destroy();
+    },
+    play(sound: any) {
+      client.voice?.connections.forEach((vc) => vc.play(sound));
     }
   };
 }
