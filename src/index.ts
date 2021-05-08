@@ -54,14 +54,12 @@ fs.watch(watchDir, { persistent: true }, (event, filename) => {
   bot.play(sound);
 });
 
-/*
 ["SIGINT", "SIGTERM"].forEach((signal) => {
   process.on(signal, () => {
     bot.exit();
     process.exit(0);
   });
 });
-*/
 
 (async () => {
   try {
