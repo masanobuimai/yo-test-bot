@@ -51,7 +51,7 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
           } else {
             console.log(`${username} says "${text}"`);
             const {file, dispose} = await members[id](text);
-            const dispatcher = connection.play(file);
+            const dispatcher = connection.play(file, { volume: 1.7 });
             dispatcher.on('finish', dispose);
           }
         } catch (error) {
