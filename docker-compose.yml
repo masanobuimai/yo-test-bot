@@ -10,3 +10,8 @@ services:
     volumes:
       - .:/app
       -  /app/node_modules
+  java:
+    build:
+      context: .
+      dockerfile: MusicBot.dockerfile
+    tty: true

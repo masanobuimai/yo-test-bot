@@ -120,3 +120,5 @@ dist
 
 # Generated audio files
 *.wav
+*.mp3
+config.musicbot.txt

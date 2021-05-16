@@ -29,6 +29,9 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
 
       const text = rules.reduce((result, rule) => result ? result : rule(message), false as RuleResult);
       if (text) {
+        if (text.startsWith('!')) {
+          return;
+        }
         if (text === '###') {
           console.log('rest voice');
           members[id] = randomVocal(voices, minPitch, pitchRange);

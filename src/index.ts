@@ -38,6 +38,7 @@ const trans = new RegExp(/^\/[a-z][a-z]-[a-z][a-z] .*$/);
 const transAuto = new RegExp(/^\/-[a-z][a-z] .*$/);
 const bot = create(token, voices, minPitch, pitchRange, [
   ({content}) => content === '###' && content,
+  ({content}) => content.startsWith('!') && content,
   ({content, author: {username}}) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
   ({content}) => content === '/buki' && `オレは ${randomChoice(bukiList)}でいく`,
   ({content}) => halfAns.test(content) && `:en${content}`,
