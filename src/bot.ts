@@ -29,6 +29,11 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
 
       const text = rules.reduce((result, rule) => result ? result : rule(message), false as RuleResult);
       if (text) {
+        if (text === '###') {
+          console.log('rest voice');
+          members[id] = randomVocal(voices, minPitch, pitchRange);
+          return;
+        }
         members[id] ||= randomVocal(voices, minPitch, pitchRange);
 
         try {
@@ -56,10 +61,6 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
 
   return {
     run: async () => await client.login(token),
-    exit() {
-      client.voice?.connections?.forEach((c) => c.disconnect());
-      client.destroy();
-    },
     play(sound: any, volume: number = 1.0) {
       client.voice?.connections.forEach((vc) => vc.play(sound, { volume: volume } ));
     }

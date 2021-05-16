@@ -37,6 +37,7 @@ const kanji = new RegExp(/^[一-龠 ]*$/u);
 const trans = new RegExp(/^\/[a-z][a-z]-[a-z][a-z] .*$/);
 const transAuto = new RegExp(/^\/-[a-z][a-z] .*$/);
 const bot = create(token, voices, minPitch, pitchRange, [
+  ({content}) => content === '###' && content,
   ({content, author: {username}}) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
   ({content}) => content === '/buki' && `オレは ${randomChoice(bukiList)}でいく`,
   ({content}) => halfAns.test(content) && `:en${content}`,
@@ -47,8 +48,9 @@ const bot = create(token, voices, minPitch, pitchRange, [
 ]);
 
 fs.watch(watchDir, { persistent: true }, (event, filename) => {
+  const sound = path.join(watchDir, filename);
   if (event !== "rename") {
-    const sound = path.join(watchDir, filename);
+    console.log(event + ":" + sound);
     if (path.extname(filename) == ".mp3") {
       console.log('play (volume 0.4):' + sound);
       bot.play(sound, 0.4);
@@ -57,13 +59,6 @@ fs.watch(watchDir, { persistent: true }, (event, filename) => {
       bot.play(sound);
     }
   }
-});
-
-["SIGINT", "SIGTERM"].forEach((signal) => {
-  process.on(signal, () => {
-    bot.exit();
-    process.exit(0);
-  });
 });
 
 (async () => {
